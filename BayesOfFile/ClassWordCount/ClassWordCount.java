@@ -9,7 +9,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.io.MapWritable;
+import org.apache.hadoop.io.SortedMapWritable;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
@@ -25,9 +25,9 @@ public class ClassWordCount{
 	}
 
 	//编写mapper类
-	public static class WordCountMapper extends Mapper<Object,Text,MapWritable,IntWritable>{
+	public static class WordCountMapper extends Mapper<Object,Text,SortedMapWritable,IntWritable>{
 		private static final IntWritable one = new IntWritable(1);
-		private MapWritable class_word = new MapWritable();
+		private SortedMapWritable class_word = new SortedMapWritable();
 		public WordCountMapper(){
 		}
 
@@ -47,11 +47,11 @@ public class ClassWordCount{
 
 
 	//编写reducer类
-	protected static class WordCountReducer extends Reducer<MapWritable,IntWritable,MapWritable,IntWritable>{
+	protected static class WordCountReducer extends Reducer<SortedMapWritable,IntWritable,SortedMapWritable,IntWritable>{
 		private IntWritable result = new IntWritable();
 		public WordCountReducer(){
 		}
-		public void reduce(MapWritable key,Iterable<IntWritable> values,Context context) throws IOException,InterruptedException{
+		public void reduce(SortedMapWritable key,Iterable<IntWritable> values,Context context) throws IOException,InterruptedException{
 			int sum = 0;
 			IntWritable val;
 			for(Iterator i = values.iterator(); i.hasNext(); sum+=val.get()){
@@ -74,11 +74,11 @@ public class ClassWordCount{
 		job.setReducerClass(ClassWordCount.WordCountReducer.class);
 
 
-		job.setMapOutputKeyClass(MapWritable.class);
+		job.setMapOutputKeyClass(SortedMapWritable.class);
 		job.setMapOutputValueClass(IntWritable.class);
 
 		//设置最终输出的kv类型
-		job.setOutputKeyClass(MapWritable.class);
+		job.setOutputKeyClass(SortedMapWritable.class);
 		job.setOutputValueClass(IntWritable.class);
 
 		//设置输入输出路径
