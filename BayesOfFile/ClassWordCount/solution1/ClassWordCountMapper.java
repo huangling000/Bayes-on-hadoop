@@ -12,6 +12,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
 
 public class ClassWordCountMapper extends Mapper<Object,Text,ClassWord,IntWritable>{
+	ClassWord cw = new ClassWord();
 	static IntWritable one = new IntWritable(1);
 
 	@Override
@@ -20,11 +21,10 @@ public class ClassWordCountMapper extends Mapper<Object,Text,ClassWord,IntWritab
 		//获取类名
 		InputSplit inputSplit = context.getInputSplit();
 		String dirname = ((FileSplit) inputSplit).getPath().getParent().getName();
-		//一行只有一个单词，只需转换为String即可
-		String w = value.toString();
 
 		//将类名与单词加入ClassWord
-		ClassWord cw = new ClassWord(dirname,w);
+		//System.out.println(dirname.toString() + " " +value.toString());
+		cw.set(new Text(dirname),value);
 		context.write(cw,one);
 	}
 }

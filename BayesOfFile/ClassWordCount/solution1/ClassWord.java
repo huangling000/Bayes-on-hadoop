@@ -26,7 +26,7 @@ public class ClassWord implements WritableComparable<ClassWord>{
 
 	public void set(Text classname,Text word){
 		this.classname = classname;
-		this.word = this.word;
+		this.word = word;
 	}
 
 	public Text getClassname(){
